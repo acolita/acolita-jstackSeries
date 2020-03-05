@@ -3,6 +3,8 @@ Script bash para coleta de thread dumps em série
 
 # Como utilizar
 
+*Importante:* execute o script com o mesmo usuário da aplicação, caso contrário não irá funcionar
+
 A maneira mais fácil é executando uma vez o script
 
 ```bash
