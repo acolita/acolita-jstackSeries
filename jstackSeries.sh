@@ -37,7 +37,7 @@ echo "" >> ${basic_info_file}
 
 while [ $count -gt 0 ]
 do
-	jstack $pid > jstack.$pid.$(date +%s.%N)
+	jstack -l $pid > jstack.$pid.$(date +%s.%N)
 	top -H -b -n1 -p $pid > top.$pid.$(date +%s.%N)
 	sleep $delay
 	let count--
