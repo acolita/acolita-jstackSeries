@@ -11,6 +11,16 @@ A maneira mais fácil é executando uma vez o script
 
 Para que ele mostre os pids dos processos java que estão em execução na máquina.
 
+```bash
+Usage: jstackSeries <pid> [ <count> [ <delay> ] ]
+    Defaults: count = 10, delay = 1 (seconds)
+
+Running Java Programs
+
+Command          Pid
+jca464.jar       137
+```
+
 Depois disso, basta fazer uma nova execução passando o pid do processo
 
 ```bash
