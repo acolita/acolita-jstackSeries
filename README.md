@@ -32,6 +32,8 @@ Na execução padrão ele irá realizar a coleta por 10 minutos, 300 arquivos, u
 Se tudo ocorrer bem, será gerado um arquivo zip com os artefatos gerados.
 
 Se precisar de uma ajuda, nos envie a coleta para análise que nós entraremos em contato.
+
+
 https://www.acolita.com.br/file-upload.html
 
 # Créditos
