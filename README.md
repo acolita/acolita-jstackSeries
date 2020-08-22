@@ -38,6 +38,18 @@ Se precisar de uma ajuda, nos envie a coleta para análise que nós entraremos e
 
 https://www.acolita.com.br/file-upload.html
 
+# Containers
+
+Utilize a versão **container** se estiver utilizando Docker.
+Ela assume menos utilitarios instalados, assim com maior chance de sucesso no profiling.
+
+# Upload automático
+
+Utilize nosso script de upload automático para enviar o insumo coletado diretamente para nosso time de especialistas.
+Entre em contato conosco para saber como podemos ajuda-lo.
+
+contato at acolita.com.br
+
 # Créditos
 
 Este script é baseado no script de mesmo nome em:
