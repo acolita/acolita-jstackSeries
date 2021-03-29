@@ -32,7 +32,7 @@ URL="https://api.acolita.com.br/v1/file-upload"
 
 BODY='{"company": "'${COMPANY}'", "application": "'${APPLICATION}'", "file": "'${filename}'"}'
 
-api_path=`curl "${URL}" -d "${BODY}"`
+api_path=`curl -H "Origin: https://acolita.com.br" "${URL}" -d "${BODY}"`
 success=${?}
 
 if [ ${success} -eq 0 ]; then
