@@ -49,49 +49,62 @@ checksFor(){
 	fi
 }
 
-# curlRequisition <url> <body> <fullFilePath> <origin:optional>
-curlUpload(){
-	URL=$1
-	BODY=$2
-	FULLPATH=$3
-	ORIGIN=${4:-"https://acolita.com.br"}
+# curlRequisition <fullFilePath> <origin:optional>
+api2Upload(){
+	FULLPATH=$1
+	ORIGIN=${2:-"https://acolita.com.br"}
 
-	api_path=`curl -H "Origin: ${ORIGIN}" "${URL}" -d "${BODY}"`
+	id="" # id is passed through fuctions
+	api2Post $FULLPATH $ORIGIN
+	api2Put $FULLPATH
+}
+
+# api2Post <fullFilePath> <origin:optional>
+api2Post(){
+	FULLPATH=$1
+	ORIGIN=${2:-"https://acolita.com.br"}
+
+	URL='https://api2.acolita.com.br:10443/file/reserve'
+
+	FILENAME=`basename ${FULLPATH}`
+
+	now=`date "+%Y-%m-%d"`
+	body="acolita/api2-upload/${now}/${FILENAME}"
+	id=`curl -H "Origin: ${ORIGIN}" "${URL}" -d ${body}`
 	success=${?}
 
 	if [ ${success} -eq 0 ]; then
-
+		echo 'success to post'
 		##
 		# remove double quotes from begin and end of variable
-		api_path="${api_path%\"}"
-		api_path="${api_path#\"}"
+		#id="${id%\"}"
+		#id="${id#\"}"
 		##
-
-		curl ${api_path} --upload-file ${FULLPATH}
-		success=${?}
-		if [ ${success} -eq 0 ]; then
-			echo 'upload complete'
-		else
-			echo 'upload fail'
-		fi
 	else
-		echo 'fail to get api_path'
+		echo 'fail to get api2 id'
+		exit
 	fi
 }
 
-validateArgsCount $0 $# "usage: ${me} <filename> <company> <application:optional>" 2 3
+# api2Put <fullFilePath>
+api2Put(){
+	FULLPATH=$1
+	URL="https://api2.acolita.com.br:10443/file/$id/upload"
+	curl -H "Origin: ${ORIGIN}" "${URL}" --upload-file ${FULLPATH}
+	success=${?}
+	if [ ${success} -eq 0 ]; then
+		echo 'success to put'
+		echo 'upload complete'
+		echo "download link: https://api2.acolita.com.br:10443/file/$id/download"
+	else
+		echo 'upload fail'
+	fi
+}
+
+validateArgsCount $0 $# "usage: ${me} <filename>" 1 1
 
 checksFor curl
 
-COMPANY=${2}
-
 fullpath=`readlink -f ${1}`
-filename=`basename ${fullpath}`
 
-APPLICATION=${3:-Default}
-
-URL="https://api2.acolita.com.br/file-upload"
-
-BODY='{"company": "'${COMPANY}'", "application": "'${APPLICATION}'", "file": "'${filename}'"}'
-
-curlUpload $URL $BODY ${fullpath} 
+api2Upload $URL ${fullpath} 
