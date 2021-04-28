@@ -70,16 +70,28 @@ api2Post(){
 
 	now=`date "+%Y-%m-%d"`
 	body="acolita/api2-upload/${now}/${FILENAME}"
-	id=`curl -H "Origin: ${ORIGIN}" "${URL}" -d ${body}`
+	response=`curl -s -w " %{http_code}" -H "Origin: ${ORIGIN}" "${URL}" -d /${body}`
 	success=${?}
+	set -- $response
+
+	for statusCode; do true; done # gets last argument 
+
+	##
+	# checks if statusCode starts with a 2
+	case $statusCode in 
+	2*)
+	    ;;
+	*)
+	    echo 'Reponse error, status code: '$statusCode
+		exit
+	    ;;
+	esac
+	##
+
+	id=$1 # sets uuid
 
 	if [ ${success} -eq 0 ]; then
 		echo 'success to post'
-		##
-		# remove double quotes from begin and end of variable
-		#id="${id%\"}"
-		#id="${id#\"}"
-		##
 	else
 		echo 'fail to get api2 id'
 		exit
