@@ -70,7 +70,7 @@ api2Post(){
 
 	now=`date "+%Y-%m-%d"`
 	body="acolita/api2-upload/${now}/${FILENAME}"
-	response=`curl -s -w " %{http_code}" -H "Origin: ${ORIGIN}" "${URL}" -d /${body}`
+	response=`curl -s -w " %{http_code}" -H "Origin: ${ORIGIN}" "${URL}" -d ${body}`
 	success=${?}
 	set -- $response
 
