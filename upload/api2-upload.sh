@@ -24,7 +24,7 @@ validateArgsCount(){
 	# validate min
 	if [ $argsCount -lt $minArgs ]; then
 		echo Arguments missing!
-        echo usageMessage
+        echo $usageMessage
 		exit
 	fi
 	# validate max
@@ -32,7 +32,7 @@ validateArgsCount(){
 		maxArgs=$5
 		if [ $argsCount -gt $maxArgs ]; then
 		    echo Too many arguments!
-			echo usageMessage
+			echo $usageMessage
 			exit
 		fi
 	fi
@@ -101,7 +101,7 @@ api2Put(){
 	fi
 }
 
-validateArgsCount $0 $# "usage: ${me} <filename>" 1 1
+validateArgsCount $0 $# "usage: `basename $0` <filename>" 1 1
 
 checksFor curl
 
