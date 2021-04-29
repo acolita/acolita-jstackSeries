@@ -70,11 +70,16 @@ api2Post(){
 
 	now=`date "+%Y-%m-%d"`
 	body="acolita/api2-upload/${now}/${FILENAME}"
-	response=`curl -s -w " %{http_code}" -H "Origin: ${ORIGIN}" "${URL}" -d ${body}`
+	response=`curl -f -s -w " %{http_code}" -H "Origin: ${ORIGIN}" "${URL}" -d ${body}`
 	success=${?}
+
+	# expand response to positional parameters
 	set -- $response
 
-	for statusCode; do true; done # gets last argument 
+	# drops the first n-1 positional parameters
+	shift $(( $# - 1))
+	
+	statusCode=$1
 
 	##
 	# checks if statusCode starts with a 2
