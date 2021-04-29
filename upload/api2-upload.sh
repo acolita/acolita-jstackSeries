@@ -1,4 +1,4 @@
-#!/usr/bin/env sh
+#!/usr/bin/env -S sh
 
 #
 # este script possibilita o upload de coletas de performance
@@ -41,11 +41,19 @@ validateArgsCount(){
 # checksFor <utilitaryToCheck>
 checksFor(){
 	utilitary=$1
-	which $utilitary
+	nul=`which $utilitary`
 	success=${?}
 
 	if [ ${success} -ne 0 ]; then
-		apk add $utilitary
+		echo
+		echo "$utilitary not found, try one of these commands to install it"
+		echo
+		echo " apk add $utilitary"
+		echo " apt install $utilitary"
+		echo " yum install $utilitary"
+		echo
+
+		exit
 	fi
 }
 
@@ -76,8 +84,11 @@ api2Post(){
 	# expand response to positional parameters
 	set -- $response
 
+	# if all right, this is an uuid
+	id=$1
+
 	# drops the first n-1 positional parameters
-	shift $(( $# - 1))
+	shift $(( $# - 1 ))
 	
 	statusCode=$1
 
@@ -93,8 +104,6 @@ api2Post(){
 	esac
 	##
 
-	id=$1 # sets uuid
-
 	if [ ${success} -eq 0 ]; then
 		echo 'success to post'
 	else
@@ -107,7 +116,7 @@ api2Post(){
 api2Put(){
 	FULLPATH=$1
 	URL="https://api2.acolita.com.br:10443/file/$id/upload"
-	curl -H "Origin: ${ORIGIN}" "${URL}" --upload-file ${FULLPATH}
+	curl -f -s -H "Origin: ${ORIGIN}" "${URL}" --upload-file ${FULLPATH}
 	success=${?}
 	if [ ${success} -eq 0 ]; then
 		echo 'success to put'
