@@ -72,7 +72,7 @@ api2Post(){
 	FULLPATH=$1
 	ORIGIN=${2:-"https://acolita.com.br"}
 
-	URL='https://api2.acolita.com.br:10443/file/reserve'
+	URL='https://api2.acolita.com.br/file/reserve'
 
 	FILENAME=`basename ${FULLPATH}`
 
@@ -115,13 +115,13 @@ api2Post(){
 # api2Put <fullFilePath>
 api2Put(){
 	FULLPATH=$1
-	URL="https://api2.acolita.com.br:10443/file/$id/upload"
+	URL="https://api2.acolita.com.br/file/$id/upload"
 	curl -f -s -H "Origin: ${ORIGIN}" "${URL}" --upload-file ${FULLPATH}
 	success=${?}
 	if [ ${success} -eq 0 ]; then
 		echo 'success to put'
 		echo 'upload complete'
-		echo "download link: https://api2.acolita.com.br:10443/file/$id/download"
+		echo "download link: https://api2.acolita.com.br/file/$id/download"
 	else
 		echo 'upload fail'
 	fi
