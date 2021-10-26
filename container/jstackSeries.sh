@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 # Adaptation of script from eclipse.org http://wiki.eclipse.org/How_to_report_a_deadlock#jstackSeries_--_jstack_sampling_in_fixed_time_intervals_.28tested_on_Linux.29
 
 if [ ${#} -eq 0 ]; then
