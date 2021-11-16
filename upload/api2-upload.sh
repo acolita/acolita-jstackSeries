@@ -57,20 +57,22 @@ checksFor(){
 	fi
 }
 
-# curlRequisition <fullFilePath> <origin:optional>
+# curlRequisition <fullFilePath> <cookie-token> <origin:optional> 
 api2Upload(){
 	FULLPATH=$1
-	ORIGIN=${2:-"https://acolita.com.br"}
+	COOKIE=$2
+	ORIGIN=${3:-"https://acolita.com.br"}
 
 	id="" # id is passed through fuctions
-	api2Post $FULLPATH $ORIGIN
-	api2Put $FULLPATH
+	api2Post $FULLPATH $COOKIE $ORIGIN
+	api2Put $FULLPATH $COOKIE
 }
 
 # api2Post <fullFilePath> <origin:optional>
 api2Post(){
 	FULLPATH=$1
-	ORIGIN=${2:-"https://acolita.com.br"}
+	COOKIE=$2
+	ORIGIN=${3:-"https://acolita.com.br"}
 
 	URL='https://api2.acolita.com.br/file/reserve'
 
@@ -78,7 +80,7 @@ api2Post(){
 
 	now=`date "+%Y-%m-%d"`
 	body="acolita/api2-upload/${now}/${FILENAME}"
-	response=`curl -f -s -w " %{http_code}" -H "Origin: ${ORIGIN}" "${URL}" -d ${body}`
+	response=`curl -f -s -w " %{http_code}" -H "Origin: ${ORIGIN}" "${URL}" -b "VouchCookie=$COOKIE" -d ${body}`
 	success=${?}
 
 	# expand response to positional parameters
@@ -112,11 +114,12 @@ api2Post(){
 	fi
 }
 
-# api2Put <fullFilePath>
+# api2Put <fullFilePath> <cookie-token>
 api2Put(){
 	FULLPATH=$1
+	COOKIE=$2
 	URL="https://api2.acolita.com.br/file/$id/upload"
-	curl -f -s -H "Origin: ${ORIGIN}" "${URL}" --upload-file ${FULLPATH}
+	curl -f -s -H "Origin: ${ORIGIN}" "${URL}" -b "VouchCookie=$COOKIE" --upload-file ${FULLPATH}
 	success=${?}
 	if [ ${success} -eq 0 ]; then
 		echo 'success to put'
@@ -127,10 +130,12 @@ api2Put(){
 	fi
 }
 
-validateArgsCount $0 $# "usage: `basename $0` <filename>" 1 1
+validateArgsCount $0 $# "usage: `basename $0` <filename> <cookie-token>" 2 3
 
 checksFor curl
 
+COOKIE=$2
+URL=$3
 fullpath=`readlink -f ${1}`
 
-api2Upload $URL ${fullpath} 
+api2Upload ${fullpath} $COOKIE $URL
