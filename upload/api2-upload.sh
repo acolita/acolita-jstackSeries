@@ -1,4 +1,4 @@
-#!/usr/bin/env -S sh
+#!/usr/bin/env sh
 
 #
 # este script possibilita o upload de coletas de performance
