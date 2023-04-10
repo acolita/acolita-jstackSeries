@@ -16,13 +16,17 @@ pid=${1}           # required
 count=${2:-300}  # defaults to 300 times
 delay=${3:-1}    # defaults to 1 second
 
+total=$count
+
 while [ ${count} -gt 0 ]
 do
 	filename=jstack.${pid}.`date -Is | tr ':T' '-'`
 	jstack -l ${pid} > ${filename}
 	sleep ${delay}
 	let count--
-	echo -n "."
+	
+	percentage=$(((100*(total-count))/total))
+    echo -en "\r$(printf "%*s" "$percentage" '' | tr ' ' '#') $percentage%"
 done
 
 filename=jstack-collect-`date -Is | tr ':T' '-'`.tar.bz2
