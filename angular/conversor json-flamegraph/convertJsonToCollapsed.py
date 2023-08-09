@@ -1,8 +1,6 @@
 import json, sys
 
 def convert(file_name):
-    #file_name = parse_input()
-
     with open(file_name) as f:
         data = json.load(f)
         stack = "root"
@@ -15,7 +13,6 @@ def save(file_name, traces):
     new_file_name = file_name + ".txt"
     with open (new_file_name, 'w') as f:
        for line in traces:
-           #print(line)
            f.write(line + "\n")
 
 def walk_tree(data, stack, traces):
@@ -30,17 +27,13 @@ def walk_tree(data, stack, traces):
             sourceName = element["source"]
             newStack = stack + ";" + sourceName
             traces.append(newStack)
-
-        #if "duration" in element:
-        #    duration = element["duration"]
         
         if (not "children" in element["directives"][0]):
                 newStack = stack + ";" + element["directives"][0]["name"]
                 if "changeDetection" in element["directives"][0]:
                     changeDetection = element["directives"][0]["changeDetection"]
                     if (changeDetection > 0):
-                        if (len(element["children"]) == 0):
-                            newStack += ";changeDetection " + str(changeDetection)
+                        newStack += ";changeDetection " + str(changeDetection)
                 else:
                     if "lifecycle" in  element["directives"][0]:
                         if "ngDoCheck" in element["directives"][0]["lifecycle"]:
@@ -60,7 +53,6 @@ def walk_tree(data, stack, traces):
 def parse_input():
     if len(sys.argv) != 2:
         sys.exit('Example usage: python convertJsonTOCollapsed.py facebookBizTree.json')
-
     return sys.argv[1]
 
 if __name__ == "__main__":
