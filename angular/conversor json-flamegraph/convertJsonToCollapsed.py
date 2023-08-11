@@ -22,18 +22,14 @@ def walk_tree(data, stack, traces):
         
         # Verifica se a 'directives' do elemento nao possui 'children'
         if (not "children" in element["directives"][0]):
-
             # O nome do elemento esta na 'directives'
-            newStack = stack + ";" + element["directives"][0]["name"]
-            
+            newStack = stack + ";" + element["directives"][0]["name"]   
             # Verifica se a 'directives' do elemento tem um campo changeDetection
             if "changeDetection" in element["directives"][0]:
                 changeDetection = element["directives"][0]["changeDetection"]
                 if (changeDetection > 0):
                     newStack += ";changeDetection " + str(changeDetection)
-            
-            traces.append(newStack)
-            
+            traces.append(newStack)  
         else:
             # Se a 'directives' do elemento contem 'children', processa recursivamente
             walk_tree(element["directives"], newStack, traces)
@@ -53,7 +49,6 @@ def process_and_sum_lines(traces, output_file_name):
     
     for line in traces:
         line = line.strip() # Remove a quebra de linha no final
-        
         parts = line.split(';')
         
         # Verifica se a ultima parte eh um numero
@@ -62,11 +57,8 @@ def process_and_sum_lines(traces, output_file_name):
         else:
             value = 0
         
-        # Remove os segmentos "changeDetection" do meio
-        processed_parts = [part for part in parts if not 'changeDetection' in part]
-        
+        processed_parts = [part for part in parts if not 'changeDetection' in part] # Remove os segmentos "changeDetection" do meio
         processed_line = ';'.join(processed_parts)
-        
         line_sums[processed_line] += value
 
     with open(output_file_name, 'w') as file:
