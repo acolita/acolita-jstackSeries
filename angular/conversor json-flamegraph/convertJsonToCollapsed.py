@@ -10,40 +10,38 @@ def convert(file_name):
     
     return traces
 
-def walk_tree(data, stack, traces):
-    if not data or not isinstance(data, list):
-        return
-    
+def walk_tree(data, stack, traces): 
     for element in data:
-        if not element or not isinstance(element, dict):
-            return
-    
+        
+        # Verifica se o elemento possui um campo 'source'
         if "source" in element:
             sourceName = element["source"]
+            # Cria uma nova stack acrescentando o nome da fonte
             newStack = stack + ";" + sourceName
             traces.append(newStack)
         
+        # Verifica se a 'directives' do elemento nao possui 'children'
         if (not "children" in element["directives"][0]):
-                newStack = stack + ";" + element["directives"][0]["name"]
-                if "changeDetection" in element["directives"][0]:
-                    changeDetection = element["directives"][0]["changeDetection"]
-                    if (changeDetection > 0):
-                        newStack += ";changeDetection " + str(changeDetection)
-                else:
-                    if "lifecycle" in  element["directives"][0]:
-                        if "ngDoCheck" in element["directives"][0]["lifecycle"]:
-                            if (element["children"] == None):
-                                newStack += ";ngDoCheck " + str(element["directives"][0]["lifecycle"]["ngDoCheck"])
-                        elif "ngOnChanges" in element["directives"][0]["lifecycle"]:
-                            if (element["children"] == None):
-                                newStack += ";ngOnChanges " + str(element["directives"][0]["lifecycle"]["ngOnChanges"])
-                
-                traces.append(newStack)
+
+            # O nome do elemento esta na 'directives'
+            newStack = stack + ";" + element["directives"][0]["name"]
+            
+            # Verifica se a 'directives' do elemento tem um campo changeDetection
+            if "changeDetection" in element["directives"][0]:
+                changeDetection = element["directives"][0]["changeDetection"]
+                if (changeDetection > 0):
+                    newStack += ";changeDetection " + str(changeDetection)
+            
+            traces.append(newStack)
+            
         else:
+            # Se a 'directives' do elemento contem 'children', processa recursivamente
             walk_tree(element["directives"], newStack, traces)
         
+        # Se o elemento tem um campo 'children', processa esses filhos recursivamente
         if "children" in element:
             walk_tree(element["children"], newStack, traces)
+
         
 def parse_input():
     if len(sys.argv) != 2:
