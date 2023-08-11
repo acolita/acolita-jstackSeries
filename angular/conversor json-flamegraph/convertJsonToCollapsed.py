@@ -2,19 +2,13 @@ import json, sys
 from collections import defaultdict
 
 def convert(file_name):
-    with open(file_name) as f:
-        data = json.load(f)
+    with open(file_name) as file:
+        json_data = json.load(file)
         stack = "root"
         traces = []
-        walk_tree(data["buffer"], stack, traces)
+        walk_tree(json_data["buffer"], stack, traces)
     
     return traces
-
-def save(file_name, traces):
-    new_file_name = file_name + ".txt"
-    with open (new_file_name, 'w') as f:
-       for line in traces:
-           f.write(line + "\n")
 
 def walk_tree(data, stack, traces):
     if not data or not isinstance(data, list):
@@ -53,43 +47,35 @@ def walk_tree(data, stack, traces):
         
 def parse_input():
     if len(sys.argv) != 2:
-        sys.exit('Example usage: python convertJsonTOCollapsed.py facebookBizTree.json')
+        sys.exit('Exemplo de uso: python convertJsonTOCollapsed.py file.json')
     return sys.argv[1]
 
-def process_and_sum_lines(input_file, output_file):
-    # Inicializa um dicionario para armazenar os valores somados para as linhas
+def process_and_sum_lines(traces, output_file_name):
     line_sums = defaultdict(float)
     
-    # Le o arquivo de entrada, processa e soma as linhas
-    with open(input_file, 'r') as f:
-        for line in f:
-            line = line.strip() # Remove a quebra de linha no final
-            
-            # Divide a linha em partes
-            parts = line.split(';')
-            
-            # Verifica se a ultima parte eh um numero (valor a ser somado)
-            if any(c.isdigit() for c in parts[-1]):
-                value = float(parts.pop().split(' ')[1])
-            else:
-                value = 0
-            
-            # Filtra os segmentos "changeDetection: <numero>"
-            processed_parts = [part for part in parts if not 'changeDetection' in part]
-            
-            # Cria a linha processada
-            processed_line = ';'.join(processed_parts)
-            
-            # Adiciona o valor a soma para essa linha
-            line_sums[processed_line] += value
+    for line in traces:
+        line = line.strip() # Remove a quebra de linha no final
+        
+        parts = line.split(';')
+        
+        # Verifica se a ultima parte eh um numero
+        if any(character.isdigit() for character in parts[-1]):
+            value = float(parts.pop().split(' ')[1])
+        else:
+            value = 0
+        
+        # Remove os segmentos "changeDetection" do meio
+        processed_parts = [part for part in parts if not 'changeDetection' in part]
+        
+        processed_line = ';'.join(processed_parts)
+        
+        line_sums[processed_line] += value
 
-    # Escreve as linhas processadas e seus valores somados no arquivo de saida
-    with open(output_file, 'w') as f:
+    with open(output_file_name, 'w') as file:
         for line, summed_value in line_sums.items():
-            f.write(f'{line} {summed_value:.6f}\n')
+            file.write(f'{line} {summed_value:.6f}\n')
 
 if __name__ == "__main__":
     file_name = parse_input()
     traces = convert(file_name)
-    save(file_name, traces)
-    process_and_sum_lines(file_name + '.txt', 'output.txt')
+    process_and_sum_lines(traces, 'output.txt')
